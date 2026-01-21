@@ -3,12 +3,13 @@ NAME=libtft9486.a
 SRCS_DIR=srcs
 INC_DIR=includes
 OBJS_DIR=.objs
+IOLIB_DIR=../io_at2560
 
 SRCS=$(wildcard $(SRCS_DIR)/*.c)
 OBJS=$(subst $(SRCS_DIR),$(OBJS_DIR),$(SRCS:.c=.o))
 
 CC=avr-gcc
-CFLAGS=-mmcu=atmega2560 -DF_CPU=16000000UL -std=gnu11 -Wall -Os -I$(INC_DIR)
+CFLAGS=-mmcu=atmega2560 -DF_CPU=16000000UL -std=gnu11 -Wall -Os -I$(INC_DIR) -I$(IOLIB_DIR)/$(INC_DIR)
 
 AR=avr-ar
 ARFLAGS=rcs
