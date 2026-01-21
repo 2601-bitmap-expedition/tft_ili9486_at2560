@@ -3,3 +3,5 @@
 - Arduino Mega2560
 - avr-gcc
 - avr-ar
+
+Must be linked together with `io_at2560` library.
