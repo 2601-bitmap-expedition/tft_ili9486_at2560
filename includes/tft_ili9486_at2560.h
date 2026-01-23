@@ -29,6 +29,8 @@
 
 void write_bus(uint8_t cmd, uint8_t dcx);
 void initialize_tft(void);
+void enter_sleep_tft(void);
+void exit_sleep_tft(void);
 int put_pixel(uint16_t x, uint16_t y);
 
 #endif
