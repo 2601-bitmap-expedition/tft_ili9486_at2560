@@ -10,74 +10,28 @@ void initialize_tft(void) {
 	digital_write(LCD_RST, HIGH);
 	_delay_ms(120);
 
-	/* Start Initial Sequence */
-	write_bus(0x42, COMMAND);
-	write_bus(0x18, INDEX);
-	write_bus(0xA3, INDEX);
-	write_bus(0x12, INDEX);
-	write_bus(0x02, INDEX);
-	write_bus(0xB2, INDEX);
-	write_bus(0x12, INDEX);
-	write_bus(0xFF, INDEX);
-	write_bus(0x10, INDEX);
-	write_bus(0x00, INDEX);
+	pin_mode(LCD_CS, OUTPUT);
+	pin_mode(LCD_RS, OUTPUT);
+	pin_mode(LCD_RD, OUTPUT);
+	ddr_write(E, 0x38, 0x38);
+	ddr_write(G, 0x20, 0x20);
+	ddr_write(H, 0x78, 0x78);
+	pin_mode(LCD_WR, OUTPUT);
 
-	write_bus(0xF8, COMMAND);
-	write_bus(0x21, INDEX);
-	write_bus(0x04, INDEX);
-
-	write_bus(0xF9, COMMAND);
-	write_bus(0x00, INDEX);
-	write_bus(0x08, INDEX);
-
-	write_bus(0x36, COMMAND);
-	write_bus(0x08, INDEX);
-
-	write_bus(0xB4, COMMAND);
-	write_bus(0x00, INDEX);
-
-	write_bus(0xC1, COMMAND);
-	write_bus(0x41, INDEX);
-
-	write_bus(0xC5, COMMAND);
-	write_bus(0x00, INDEX);
-	write_bus(0x53, INDEX);
-
-	write_bus(0xE0, COMMAND);
-	write_bus(0x0F, INDEX);
-	write_bus(0x1B, INDEX);
-	write_bus(0x18, INDEX);
-	write_bus(0x0B, INDEX);
-	write_bus(0x0E, INDEX);
-	write_bus(0x09, INDEX);
-	write_bus(0x47, INDEX);
-	write_bus(0x94, INDEX);
-	write_bus(0x35, INDEX);
-	write_bus(0x0A, INDEX);
-	write_bus(0x13, INDEX);
-	write_bus(0x05, INDEX);
-	write_bus(0x08, INDEX);
-	write_bus(0x03, INDEX);
-	write_bus(0x00, INDEX);
-
-	write_bus(0xE1, COMMAND);
-	write_bus(0x0F, INDEX);
-	write_bus(0x3A, INDEX);
-	write_bus(0x37, INDEX);
-	write_bus(0x0B, INDEX);
-	write_bus(0x0C, INDEX);
-	write_bus(0x05, INDEX);
-	write_bus(0x4A, INDEX);
-	write_bus(0x24, INDEX);
-	write_bus(0x39, INDEX);
-	write_bus(0x07, INDEX);
-	write_bus(0x10, INDEX);
-	write_bus(0x04, INDEX);
-	write_bus(0x27, INDEX);
-	write_bus(0x25, INDEX);
-	write_bus(0x00, INDEX);
-
+	/* Init Screen */
+	// Soft Reset (resets the commands and parameters to their S/W Reset default values)
+	write_bus(0x01, COMMAND);
+	_delay_ms(5);
+	// Sleep Out
 	write_bus(0x11, COMMAND);
 	_delay_ms(120);
+	// Set pixel format to RGB565 (16bit)
+	write_bus(0x3A, COMMAND);
+	// 0101 0101
+	write_bus(0x55, INDEX);
+	// Memory Access Control (Vertical Mode)
+	write_bus(0x36, COMMAND);
+	write_bus(0x08, INDEX);
+	// Display on
 	write_bus(0x29, COMMAND);
 }

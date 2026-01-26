@@ -16,7 +16,7 @@
 # define SD_DI	D11
 # define SD_CS	D10
 # define LCD_D1	D9
-# define LCD_DC	D8
+# define LCD_D0	D8
 # define LCD_D7	D7
 # define LCD_D6	D6
 # define LCD_D5	D5
@@ -31,6 +31,6 @@ void write_bus(uint8_t cmd, uint8_t dcx);
 void initialize_tft(void);
 void enter_sleep_tft(void);
 void exit_sleep_tft(void);
-int put_pixel(uint16_t x, uint16_t y);
+int put_pixel(uint16_t sx, uint16_t ex, uint16_t sy, uint16_t ey, uint32_t rgb);
 
 #endif

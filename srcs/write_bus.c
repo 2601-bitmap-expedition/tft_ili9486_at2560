@@ -23,4 +23,5 @@ void write_bus(uint8_t cmd, uint8_t dcx) {
 
 	digital_write(LCD_WR, LOW);
 	digital_write(LCD_WR, HIGH);
+	digital_write(LCD_CS, HIGH);
 }
