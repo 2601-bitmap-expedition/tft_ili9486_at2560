@@ -18,7 +18,7 @@ void write_bus(uint8_t cmd, uint8_t dcx) {
 	converted_cmd = (cmd & 0x10) << 1;
 	port_write(G, 0x20, converted_cmd);
 
-	converted_cmd = ((cmd & 0x11) << 5) | ((cmd & 0xC0) >> 3);
+	converted_cmd = ((cmd & 0x03) << 5) | ((cmd & 0xC0) >> 3);
 	port_write(H, 0x78, converted_cmd);
 
 	digital_write(LCD_WR, LOW);

@@ -31,6 +31,6 @@ void write_bus(uint8_t cmd, uint8_t dcx);
 void initialize_tft(void);
 void enter_sleep_tft(void);
 void exit_sleep_tft(void);
-int put_pixel(uint16_t sx, uint16_t ex, uint16_t sy, uint16_t ey, uint32_t rgb);
+int put_pixel(uint16_t sx, uint16_t ex, uint16_t sy, uint16_t ey, uint16_t rgb);
 
 #endif

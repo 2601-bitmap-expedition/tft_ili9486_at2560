@@ -29,9 +29,9 @@ void initialize_tft(void) {
 	write_bus(0x3A, COMMAND);
 	// 0101 0101
 	write_bus(0x55, INDEX);
-	// Memory Access Control (Vertical Mode)
+	// Memory Access Control (Column Address Order = 1, RGB-BGR Order = 1)
 	write_bus(0x36, COMMAND);
-	write_bus(0x08, INDEX);
+	write_bus(0x48, INDEX);
 	// Display on
 	write_bus(0x29, COMMAND);
 }
