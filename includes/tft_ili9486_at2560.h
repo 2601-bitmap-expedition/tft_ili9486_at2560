@@ -2,8 +2,8 @@
 # define TFT_ILI9486_AT2560_H
 
 # include <inttypes.h>
-//# include <avr/io.h>
 # include <util/delay.h>
+# include <string.h>
 # include "io_at2560.h"
 
 # define LCD_RD	D54
@@ -27,10 +27,23 @@
 # define COMMAND LOW
 # define INDEX HIGH
 
+# define ROWSIZE 480
+# define COLSIZE 320
+# define ROWMEM ROWSIZE / 4
+# define COLMEM COLSIZE / 8
+
+typedef struct image {
+	uint8_t frame_no;
+	uint8_t storage[ROWMEM][COLMEM];
+	uint16_t x_range[2];
+	uint16_t y_range[2];
+	uint16_t color;
+} image_t;
+
 void write_bus(uint8_t cmd, uint8_t dcx);
 void initialize_tft(void);
-void enter_sleep_tft(void);
-void exit_sleep_tft(void);
-int put_pixel(uint16_t sx, uint16_t ex, uint16_t sy, uint16_t ey, uint16_t rgb);
+void initialize_image(image_t *img);
+int put_pixel(image_t *img, uint16_t x, uint16_t y, uint16_t rgb);
+int load_image(image_t *img);
 
 #endif
