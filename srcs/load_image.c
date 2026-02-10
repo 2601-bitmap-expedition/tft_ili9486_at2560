@@ -1,8 +1,9 @@
 #include "tft_ili9486_at2560.h"
 
-int load_image(image_t *img) {
-	uint16_t sx = img->x_range[0], ex = img->x_range[1];
-	uint16_t sy = img->y_range[0], ey = img->y_range[1];
+static void set_print_range(int16_t *x_range, int16_t *y_range) {
+	int16_t sx = x_range[0], ex = x_range[1];
+	int16_t sy = y_range[0], ey = y_range[1];
+
 	// Column
 	write_bus(0x2A, COMMAND);
 	write_bus((sx & 0xFF00) >> 8, INDEX);
@@ -16,19 +17,41 @@ int load_image(image_t *img) {
 	write_bus(sy & 0x00FF, INDEX);
 	write_bus((ey & 0xFF00) >> 8, INDEX);
 	write_bus(ey & 0x00FF, INDEX);
+}
+
+static void init_range(int16_t sx, int16_t sy, int16_t *x_range, int16_t *y_range) {
+	x_range[0] = sx;
+	y_range[0] = sy;
+	set_print_range(x_range, y_range);
+	write_bus(0x2C, COMMAND);
+}
+
+static void load_pixel(uint16_t rgb) {
+	write_bus((rgb & 0xFF00) >> 8, INDEX);
+	write_bus(rgb & 0x00FF, INDEX);
+}
+
+int load_image(image_t *img) {
+	int16_t x_range[2] = { img->x_range[0], img->x_range[1] };
+	int16_t y_range[2] = { img->x_range[0], img->y_range[1] };
+	init_range(img->x_range[0], img->y_range[0], x_range, y_range);
 
 	// Memory Write
-	write_bus(0x2C, COMMAND);
-	for (uint16_t y = sy; y <= ey; ++y) {
-		for (uint16_t x = sx; x <= ex; ++x) {
+	uint16_t rgb = img->color;
+	int blank = 0;
+	for (int16_t y = img->y_range[0]; y <= img->y_range[1]; ++y) {
+		for (int16_t x = img->x_range[0]; x <= img->x_range[1]; ++x) {
 			if ((img->storage[y % ROWMEM][x / 8] >> (x % 8)) & 1) {
-				uint16_t rgb = img->color;
-				write_bus((rgb & 0xFF00) >> 8, INDEX);
-				write_bus(rgb & 0x00FF, INDEX);
+				if (blank || x < x_range[0]) {
+					blank = 0;
+					init_range(x, y, x_range, y_range);
+				}
+				load_pixel(rgb);
 			}
 			else {
-				write_bus(0x00, INDEX);
-				write_bus(0x00, INDEX);
+				if (!blank) {
+					blank = 1;
+				}
 			}
 		}
 	}

@@ -29,21 +29,21 @@
 
 # define ROWSIZE 480
 # define COLSIZE 320
-# define ROWMEM ROWSIZE / 4
-# define COLMEM COLSIZE / 8
+# define ROWMEM 120
+# define COLMEM 40
 
 typedef struct image {
 	uint8_t frame_no;
 	uint8_t storage[ROWMEM][COLMEM];
-	uint16_t x_range[2];
-	uint16_t y_range[2];
+	int16_t x_range[2];
+	int16_t y_range[2];
 	uint16_t color;
 } image_t;
 
 void write_bus(uint8_t cmd, uint8_t dcx);
 void initialize_tft(void);
 void initialize_image(image_t *img);
-int put_pixel(image_t *img, uint16_t x, uint16_t y, uint16_t rgb);
+int put_pixel(image_t *img, int16_t x, int16_t y, uint16_t rgb);
 int load_image(image_t *img);
 
 #endif
