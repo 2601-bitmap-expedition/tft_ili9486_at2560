@@ -6,16 +6,16 @@ static void set_print_range(int16_t *x_range, int16_t *y_range) {
 
 	// Column
 	write_bus(0x2A, COMMAND);
-	write_bus((sx & 0xFF00) >> 8, INDEX);
+	write_bus(sx >> 8, INDEX);
 	write_bus(sx & 0x00FF, INDEX);
-	write_bus((ex & 0xFF00) >> 8, INDEX);
+	write_bus(ex >> 8, INDEX);
 	write_bus(ex & 0x00FF, INDEX);
 
 	// Page
 	write_bus(0x2B, COMMAND);
-	write_bus((sy & 0xFF00) >> 8, INDEX);
+	write_bus(sy >> 8, INDEX);
 	write_bus(sy & 0x00FF, INDEX);
-	write_bus((ey & 0xFF00) >> 8, INDEX);
+	write_bus(ey >> 8, INDEX);
 	write_bus(ey & 0x00FF, INDEX);
 }
 
