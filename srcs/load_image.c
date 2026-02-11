@@ -19,7 +19,7 @@ static void set_print_range(int16_t *x_range, int16_t *y_range) {
 	write_bus(ey & 0x00FF, INDEX);
 }
 
-static void init_range(int16_t sx, int16_t sy, int16_t *x_range, int16_t *y_range) {
+static void refresh_range(int16_t sx, int16_t sy, int16_t *x_range, int16_t *y_range) {
 	x_range[0] = sx;
 	y_range[0] = sy;
 	set_print_range(x_range, y_range);
@@ -34,7 +34,7 @@ static void load_pixel(uint16_t rgb) {
 int load_image(image_t *img) {
 	int16_t x_range[2] = { img->x_range[0], img->x_range[1] };
 	int16_t y_range[2] = { img->x_range[0], img->y_range[1] };
-	init_range(img->x_range[0], img->y_range[0], x_range, y_range);
+	refresh_range(img->x_range[0], img->y_range[0], x_range, y_range);
 
 	// Memory Write
 	uint16_t rgb = img->color;
@@ -44,7 +44,7 @@ int load_image(image_t *img) {
 			if ((img->storage[y % ROWMEM][x / 8] >> (x % 8)) & 1) {
 				if (blank || x < x_range[0]) {
 					blank = 0;
-					init_range(x, y, x_range, y_range);
+					refresh_range(x, y, x_range, y_range);
 				}
 				load_pixel(rgb);
 			}
