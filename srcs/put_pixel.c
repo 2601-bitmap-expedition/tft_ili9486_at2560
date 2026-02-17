@@ -1,33 +1,36 @@
 #include "tft_ili9486_at2560.h"
 
-int put_pixel(uint16_t sx, uint16_t ex, uint16_t sy, uint16_t ey, uint16_t rgb) {
-	if (sx > ex || ex >= 320 || sy > ey || ey >= 480) {
+static uint8_t check_frame_no(uint16_t y) {
+	for (uint8_t i = 1; i <= 4; ++i) {
+		if (y < ROWMEM * i) {
+			return i;
+		}
+	}
+	return 0;
+}
+
+// frame size: 120*320px
+// 120 rows
+// 320 columns -> 40bytes*8bits
+int put_pixel(image_t *img, int16_t x, int16_t y, uint16_t rgb) {
+	if (x >= COLSIZE || y >= ROWSIZE) {
 		return 0;
 	}
 
-	// Column
-	write_bus(0x2A, COMMAND);
-	write_bus((sx & 0xFF00) >> 8, INDEX);
-	write_bus(sx & 0x00FF, INDEX);
-	write_bus((ex & 0xFF00) >> 8, INDEX);
-	write_bus(ex & 0x00FF, INDEX);
-
-	// Page
-	write_bus(0x2B, COMMAND);
-	write_bus((sy & 0xFF00) >> 8, INDEX);
-	write_bus(sy & 0x00FF, INDEX);
-	write_bus((ey & 0xFF00) >> 8, INDEX);
-	write_bus(ey & 0x00FF, INDEX);
-
-	// Memory Write
-	// 11 1111 0000 0000 0000
-	write_bus(0x2C, COMMAND);
-	for (uint16_t y = sy; y <= ey; ++y) {
-		for (uint16_t x = sx; x <= ex; ++x) {
-			write_bus((rgb & 0xFF00) >> 8, INDEX);
-			write_bus(rgb & 0x00FF, INDEX);
-		}
+	uint8_t frame_no = check_frame_no(y);
+	if (img->frame_no && frame_no != img->frame_no) {
+		load_image(img);
+		initialize_image(img);
 	}
+	img->frame_no = frame_no;
+	img->storage[y % ROWMEM][x / 8] |= 1 << (x % 8);
+	img->x_range[0] = x < img->x_range[0] ? x : img->x_range[0];
+	img->x_range[1] = x > img->x_range[1] ? x : img->x_range[1];
+
+	img->y_range[0] = y < img->y_range[0] ? y : img->y_range[0];
+	img->y_range[1] = y > img->y_range[1] ? y : img->y_range[1];
+
+	img->color = rgb;
 
 	return 1;
 }
